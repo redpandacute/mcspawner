@@ -97,6 +97,58 @@ public class Main extends JavaPlugin implements Listener {
     		}
     	}
     	
+    	if(cmd.getName().equalsIgnoreCase("addnightspawner") && args.length == 2) {
+    		if(sender instanceof Player && spawn1 != null && spawn2 != null) {
+    			try {
+    			EntityType entity = EntityType.valueOf(args[0]);
+    			
+    			String spawnerid = UUID.randomUUID().toString();
+    			
+    			this.getConfig().set("spawner.nightspawner." + spawnerid + ".entity", entity.toString());
+    			this.getConfig().set("spawner.nightspawner." + spawnerid + ".spawnrate", Long.parseLong(args[1]));
+    			this.getConfig().set("spawner.nightspawner." + spawnerid + ".world", spawn1.getWorld().getName());
+    			this.getConfig().set("spawner.nightspawner." + spawnerid + ".location1", spawn1.toVector());
+    			this.getConfig().set("spawner.nightspawner." + spawnerid + ".location2", spawn2.toVector());
+    			//TODO save into config
+    			
+    			getServer().getConsoleSender().sendMessage("Allah: Nightspawner set.");
+    			saveConfig();
+    			loadConfig();
+    			return true;
+    			
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    				getServer().getConsoleSender().sendMessage("Allah: Invalid Input!");
+    			}
+    		}
+    	}
+    	
+    	if(cmd.getName().equalsIgnoreCase("adddaypawner") && args.length == 2) {
+    		if(sender instanceof Player && spawn1 != null && spawn2 != null) {
+    			try {
+    			EntityType entity = EntityType.valueOf(args[0]);
+    			
+    			String spawnerid = UUID.randomUUID().toString();
+    			
+    			this.getConfig().set("spawner.dayspawner." + spawnerid + ".entity", entity.toString());
+    			this.getConfig().set("spawner.dayspawner." + spawnerid + ".spawnrate", Long.parseLong(args[1]));
+    			this.getConfig().set("spawner.dayspawner." + spawnerid + ".world", spawn1.getWorld().getName());
+    			this.getConfig().set("spawner.dayspawner." + spawnerid + ".location1", spawn1.toVector());
+    			this.getConfig().set("spawner.dayspawner." + spawnerid + ".location2", spawn2.toVector());
+    			//TODO save into config
+    			
+    			getServer().getConsoleSender().sendMessage("Allah: Dayspawner set.");
+    			saveConfig();
+    			loadConfig();
+    			return true;
+    			
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    				getServer().getConsoleSender().sendMessage("Allah: Invalid Input!");
+    			}
+    		}
+    	}
+    	
     	if(cmd.getName().equalsIgnoreCase("activatespawns") && args.length == 0) {
     		
     		loadConfig();

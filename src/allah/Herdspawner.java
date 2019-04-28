@@ -84,7 +84,7 @@ public class Herdspawner extends Spawner {
 		
 			for(int i = 0; i <= herdsize; i++) {
 				Block spawnblock = spawnableground.get((int) Math.round(Math.random() * spawnableground.size()));
-				spawnchunk.getWorld().spawnEntity(spawnblock.getLocation().add(0, 1, 0), entity);
+				spawnchunk.getWorld().spawnEntity(spawnblock.getLocation().add(0, 2, 0), entity);
 			}
 			
 			plugin.getServer().getConsoleSender().sendMessage("Herdspawner: Spawned entities at: X(" + spawnchunk.getX() +") Z(" + spawnchunk.getZ() + ")");
@@ -103,7 +103,7 @@ public class Herdspawner extends Spawner {
 	            for (int y = 50; y < 90; y++)
 	            {
 	            	Block block = chunk.getBlock(x, y, z);
-	                if(spawnMaterial.contains(block.getType()) && chunk.getBlock(x, y+1, z).getType() == Material.AIR && chunk.getBlock(x, y+2, z).getType() == Material.AIR) {
+	                if(spawnMaterial.contains(block.getType()) && chunk.getBlock(x, y+1, z).isPassable() && chunk.getBlock(x, y+2, z).isPassable() && !chunk.getBlock(x, y+1, z).isLiquid() && !chunk.getBlock(x, y+2, z).isLiquid()) {
 	                	spawnableGround.add(block);
 	                }
 	            }

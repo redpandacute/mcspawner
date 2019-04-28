@@ -5,5 +5,7 @@ api-version: 1.14
 commands:
    spawntool:
    addherdspawner:
+   adddayspawner:
+   addnightspawner:
    activatespawner:
    deactivatespawner:
