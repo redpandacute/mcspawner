@@ -17,8 +17,6 @@ public Nightspawner(Location loc1, Location loc2, EntityType entity, long spawnr
 		this.spawnrate = spawnrate;
 		this.areaentitylimit = areaentitylimit;
 		this.chunkentitylimit = chunkentitylimit;
-		
-		this.slopelimit = 250;
 
 		
 		this.plugin = plugin;
@@ -51,16 +49,12 @@ public Nightspawner(Location loc1, Location loc2, EntityType entity, long spawnr
 		Chunk spawnchunk = null;
 		int searchcount = 0;
 		
-		while(!found && searchcount < 5) {
-			plugin.getServer().getConsoleSender().sendMessage("Allah: CHUNKSIZE: " + chunk.size() + " " + searchcount);
+		
+		while(!found && searchcount < 5 && hostileEntities() < areaentitylimit) {
 			spawnchunk = chunk.get((int) Math.floor(Math.random() * chunk.size()));
-			
-			plugin.getServer().getConsoleSender().sendMessage("Slope: " + getChunkSlope(spawnchunk));
-			
-			if(spawnchunk.getEntities().length < chunkentitylimit && getChunkSlope(spawnchunk) <= slopelimit && spawnchunk.isLoaded()) {
+			if(spawnchunk.getEntities().length < chunkentitylimit && spawnchunk.isLoaded()) {
 				
 				spawnableground = getSpawnableGround(spawnchunk);
-				plugin.getServer().getConsoleSender().sendMessage("Sground: " + spawnableground.size());
 				
 				if(spawnableground.size() > 5) {
 					found = true;
@@ -74,8 +68,6 @@ public Nightspawner(Location loc1, Location loc2, EntityType entity, long spawnr
 		
 			Block spawnblock = spawnableground.get((int) Math.round(Math.random() * spawnableground.size()));
 			spawnchunk.getWorld().spawnEntity(spawnblock.getLocation().add(0, 2, 0), entity);
-			
-			plugin.getServer().getConsoleSender().sendMessage("Nightspawner: Spawned entities at: X(" + spawnchunk.getX() +") Z(" + spawnchunk.getZ() + ")");
 		}
 	}
 
@@ -91,7 +83,7 @@ public Nightspawner(Location loc1, Location loc2, EntityType entity, long spawnr
 	            for (int y = 50; y < 90; y++)
 	            {
 	            	Block block = chunk.getBlock(x, y, z);
-	                if(!block.isPassable() && block.getType().isSolid() && chunk.getBlock(x, y+1, z).isPassable() && chunk.getBlock(x, y+2, z).isPassable() && block.getLightLevel() < 8 && !chunk.getBlock(x, y+1, z).isLiquid() && !chunk.getBlock(x, y+2, z).isLiquid()) {
+	                if(!block.isPassable() && chunk.getBlock(x, y+1, z).isPassable() && chunk.getBlock(x, y+2, z).isPassable() && chunk.getBlock(x, y+1, z).getLightLevel() < 8 && !chunk.getBlock(x, y+1, z).isLiquid() && !chunk.getBlock(x, y+2, z).isLiquid()) {
 	                	spawnableGround.add(block);
 	                }
 	            }

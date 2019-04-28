@@ -8,7 +8,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 
 public abstract class Spawner {
 	
@@ -22,11 +25,33 @@ public abstract class Spawner {
 	
 	Main plugin;
 	
-	Integer totalEntities() {
+	Integer friendlyEntities() {
+		
 		int count = 0;
 		
 		for(int i = 0; i < chunk.size(); i++) {
-			count =+ chunk.get(i).getEntities().length;
+			Entity[] entities = chunk.get(i).getEntities();
+			for(Entity entity : entities) {
+				if(entity instanceof Animals) {
+					count++;
+				}
+			}
+		}
+		
+		return count;
+	}
+	
+	Integer hostileEntities() {
+		
+		int count = 0;
+		
+		for(int i = 0; i < chunk.size(); i++) {
+			Entity[] entities = chunk.get(i).getEntities();
+			for(Entity entity : entities) {
+				if(entity instanceof Monster) {
+					count++;
+				}
+			}
 		}
 		
 		return count;

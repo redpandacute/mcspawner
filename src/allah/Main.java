@@ -33,6 +33,8 @@ public class Main extends JavaPlugin implements Listener {
 	
 	List<Spawner> spawnerList;
 	
+	int dayarealimit, nightlimit;
+	
 	@Override
     public void onEnable() {
         
@@ -41,8 +43,7 @@ public class Main extends JavaPlugin implements Listener {
 		spawn1 = null;
 		spawn2 = null;
 		
-		
-		saveConfig();
+		saveDefaultConfig();		
 		loadConfig();
 	}
     
@@ -186,7 +187,48 @@ public class Main extends JavaPlugin implements Listener {
     			Location loc1 = v1.toLocation(this.getServer().getWorld(world));
     			Location loc2 = v2.toLocation(this.getServer().getWorld(world));
     		
-    			Herdspawner spawner = new Herdspawner(loc1, loc2, entity, spawnrate, 100, 10, this);
+    			Herdspawner spawner = new Herdspawner(loc1, loc2, entity, spawnrate, getConfig().getInt("limits.dayarealimit"), getConfig().getInt("limits.chunklimit"), this);
+    			spawner.activate();
+    			spawnerList.add(spawner);
+    			//spawnerList.add(new Herdspawner(loc1, loc2, entity, spawnrate, 100, 10, this));
+    		}
+    	}
+    	
+    	if(this.getConfig().isSet("spawner.nightspawner")) {
+    		
+    		ConfigurationSection herdspawnerSection = this.getConfig().getConfigurationSection("spawner.nightspawner");
+    	
+    		for(String key : herdspawnerSection.getKeys(false)) {
+    		
+    			EntityType entity = EntityType.valueOf(herdspawnerSection.getString(key + ".entity"));
+    			long spawnrate = herdspawnerSection.getLong(key + ".spawnrate");
+    			String world = herdspawnerSection.getString(key + ".world");
+    			Vector v1 = herdspawnerSection.getVector(key + ".location1");
+    			Vector v2 = herdspawnerSection.getVector(key + ".location2");
+    			Location loc1 = v1.toLocation(this.getServer().getWorld(world));
+    			Location loc2 = v2.toLocation(this.getServer().getWorld(world));
+    		
+    			Nightspawner spawner = new Nightspawner(loc1, loc2, entity, spawnrate, getConfig().getInt("limits.nightarealimit"), getConfig().getInt("limits.chunklimit"), this);
+    			spawner.activate();
+    			spawnerList.add(spawner);
+    			//spawnerList.add(new Herdspawner(loc1, loc2, entity, spawnrate, 100, 10, this));
+    		}
+    	}
+    	if(this.getConfig().isSet("spawner.dayspawner")) {
+	
+    		ConfigurationSection herdspawnerSection = this.getConfig().getConfigurationSection("spawner.dayspawner");
+
+    		for(String key : herdspawnerSection.getKeys(false)) {
+	
+    			EntityType entity = EntityType.valueOf(herdspawnerSection.getString(key + ".entity"));
+    			long spawnrate = herdspawnerSection.getLong(key + ".spawnrate");
+    			String world = herdspawnerSection.getString(key + ".world");
+    			Vector v1 = herdspawnerSection.getVector(key + ".location1");
+    			Vector v2 = herdspawnerSection.getVector(key + ".location2");
+    			Location loc1 = v1.toLocation(this.getServer().getWorld(world));
+    			Location loc2 = v2.toLocation(this.getServer().getWorld(world));
+	
+    			Dayspawner spawner = new Dayspawner(loc1, loc2, entity, spawnrate, getConfig().getInt("limits.dayarealimit"), getConfig().getInt("limits.chunklimit"), this);
     			spawner.activate();
     			spawnerList.add(spawner);
     			//spawnerList.add(new Herdspawner(loc1, loc2, entity, spawnrate, 100, 10, this));

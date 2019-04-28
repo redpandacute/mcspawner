@@ -1,0 +1,4 @@
+limits:
+   dayarealimit: 10
+   nightarealimit: 30
+   chunklimit: 10
