@@ -1,4 +1,3 @@
 limits:
-   dayarealimit: 10
-   nightarealimit: 30
+   slopelimit: 5
    chunklimit: 10

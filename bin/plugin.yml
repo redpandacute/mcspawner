@@ -1,11 +1,19 @@
 name: Allah
 main: allah.Main
-version: 1.0
+version: 1.1
 api-version: 1.14
 commands:
    spawntool:
+      description: Gives you a tool to mark spawn areas.
+      usage: "Usage: '/al spawntool'"
    addherdspawner:
+      description: Adds a herdspawner to market area.
+      usage: "Usage: '/al addherdspawner <entity> <spawnrate> <limit> <(optional) name>'"
    adddayspawner:
+      description: Adds a dayspawner to market area.
+      usage: "Usage: '/al adddayspawner <entity> <spawnrate> <limit> <(optional) name>'"
    addnightspawner:
-   activatespawner:
-   deactivatespawner:
+      description: Adds a nightspawner to market area.
+      usage: "Usage: '/al addnightspawner <entity> <spawnrate> <limit> <killratio> <(optional) name>'"
+   reloadallah:
+   al:
