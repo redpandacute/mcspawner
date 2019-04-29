@@ -93,6 +93,7 @@ public class Herdspawner extends Spawner {
 	ArrayList<Block> getSpawnableGround(Chunk chunk) {
 
 		ArrayList<Block> spawnableGround = new ArrayList<Block>();
+		int liqcount = 0;
 
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
@@ -109,12 +110,18 @@ public class Herdspawner extends Spawner {
 						// !chunk.getBlock(x, y+2, z).isLiquid()) {
 						
 						spawnableGround.add(block);
+					}  else if (!block.isPassable() && chunk.getBlock(x, y + 1, z).isLiquid()) {
+						liqcount++;
 					}
 				}
 			}
 		}
-
-		return spawnableGround;
+		
+		if (liqcount > 100) {
+			return null;
+		} else {
+			return spawnableGround;
+		}
 
 	}
 

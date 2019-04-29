@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.material.Sapling;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,9 +17,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Crops;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -28,9 +31,13 @@ public class Main extends JavaPlugin implements Listener {
 
 	String spawntoolnameunused = ChatColor.GREEN + "Select spawn area",
 			spawntoolnameused = ChatColor.RED + "Select spawn area";
-	String fertilitytoolname;
+	
+	String fertilitytoolnameunused = ChatColor.GREEN + "Select fertile region",
+			fertilitytoolnameused = ChatColor.RED + "Select feltile region";
 
 	Location spawn1, spawn2;
+	
+	Location fertile1, fertile2;
 
 	List<Spawner> spawnerList;
 
@@ -62,6 +69,23 @@ public class Main extends JavaPlugin implements Listener {
 					Player player = (Player) sender;
 
 					ItemStack stool = new ItemStack(Material.WOODEN_SWORD);
+					ItemMeta meta = stool.getItemMeta();
+
+					meta.setDisplayName(spawntoolnameunused);
+					meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+
+					stool.setItemMeta(meta);
+
+					player.getInventory().addItem(stool);
+					return true;
+				}
+			}
+			
+			if (args[0].equalsIgnoreCase("fertilitytool") && args.length == 1) {
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+
+					ItemStack stool = new ItemStack(Material.WOODEN_HOE);
 					ItemMeta meta = stool.getItemMeta();
 
 					meta.setDisplayName(spawntoolnameunused);
@@ -106,6 +130,7 @@ public class Main extends JavaPlugin implements Listener {
 					} catch (Exception e) {
 						e.printStackTrace();
 						getServer().getConsoleSender().sendMessage("Allah: Invalid Input!");
+						sender.sendMessage(ChatColor.RED + "Invalid Input");
 					}
 				}
 			}
@@ -141,11 +166,41 @@ public class Main extends JavaPlugin implements Listener {
 					} catch (Exception e) {
 						e.printStackTrace();
 						getServer().getConsoleSender().sendMessage("Allah: Invalid Input!");
+						sender.sendMessage(ChatColor.RED + "Invalid Input");
 					}
 					
 						loadConfig();
 						return true;
 
+				}
+			}
+			
+			if (args[0].equalsIgnoreCase("addfertileregion") && args.length == 2) {
+				getServer().getConsoleSender().sendMessage("Allah:im here:");
+				if (sender instanceof Player && fertile1 != null && fertile2 != null) {
+					this.getConfig().set("fertilizedworlds." + fertile1.getWorld().getName() + ".fertiliteRegions." + args[1] + ".location1", fertile1.toVector());
+					this.getConfig().set("fertilizedworlds." + fertile1.getWorld().getName() + ".fertiliteRegions." + args[1] + ".location2", fertile2.toVector());
+					
+					getServer().getConsoleSender().sendMessage("Allah: Fertile region added.");
+					sender.sendMessage(ChatColor.GREEN + "Fertile region added.");					
+					saveConfig();
+				}
+			}
+			
+			if (args[0].equalsIgnoreCase("addfertility") && args.length == 3) {
+				if (sender instanceof Player && fertile1 != null && fertile2 != null) {
+					try {
+					
+						Material material = Material.valueOf(args[2].toUpperCase());
+
+						this.getConfig().set("fertilizedworlds." + fertile1.getWorld().getName() + ".fertiliteRegions." + args[1] + ".fertilities." + UUID.randomUUID(), material.toString());
+						getServer().getConsoleSender().sendMessage("Allah: fertility");
+						sender.sendMessage(ChatColor.GREEN + "fertility added");					
+						saveConfig();
+					} catch (Exception e) {
+						getServer().getConsoleSender().sendMessage("Allah: Invalid input");
+						sender.sendMessage(ChatColor.RED + "Invalid Input");	
+					}
 				}
 			}
 
@@ -177,6 +232,7 @@ public class Main extends JavaPlugin implements Listener {
 					} catch (Exception e) {
 							e.printStackTrace();
 							getServer().getConsoleSender().sendMessage("Allah: Invalid Input!");
+							sender.sendMessage(ChatColor.RED + "Invalid Input");
 					}
 						
 						loadConfig();
@@ -310,5 +366,36 @@ public class Main extends JavaPlugin implements Listener {
 				// this));
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerPlantEvent(BlockPlaceEvent event) {
+		if(getConfig().isSet("fertilizedworlds." + event.getBlock().getWorld().getName())) {
+			if(event.getBlock() instanceof Crops || event.getBlock() instanceof Sapling) {
+				if(fertile(event)) {
+					return;
+				} else {
+					event.getBlock().breakNaturally();
+				}
+			}
+		}
+	}
+
+	private boolean fertile(BlockPlaceEvent event) {
+		
+		ConfigurationSection fertileregionsection = this.getConfig().getConfigurationSection("fertilizedworlds." + event.getBlock().getWorld().getName() + ".fertileregions");
+		
+		for(String key : fertileregionsection.getKeys(false)) {
+			List<Material> fertilities = new ArrayList<Material>();
+			for(String key2 : fertileregionsection.getConfigurationSection("fertilities").getKeys(false)) {
+				fertilities.add(Material.valueOf(fertileregionsection.getString("fertilities." + key2)));
+			}
+			
+			FertileRegion region = new FertileRegion(fertilities, fertileregionsection.getVector("location1").toLocation(event.getBlock().getWorld()).getChunk(), fertileregionsection.getVector("location2").toLocation(event.getBlock().getWorld()).getChunk());
+			if(region.isInRegion(event.getBlock().getChunk()) && region.isFertile(event.getBlock())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -54,6 +54,29 @@ public class Slave implements Listener {
 				meta.setDisplayName(plugin.spawntoolnameunused);
 				item.setItemMeta(meta);
 			}
+			
+			if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.fertilitytoolnameunused)) {
+				plugin.fertile1 = p.getLocation().clone();
+
+				p.sendMessage("Location 1. set to: " + plugin.fertile1.getBlockX() + ", " + plugin.fertile1.getBlockY()
+						+ ", " + plugin.fertile1.getBlockZ());
+
+				ItemStack item = event.getItem();
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(plugin.fertilitytoolnameused);
+				item.setItemMeta(meta);
+
+			} else if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.fertilitytoolnameused)) {
+				plugin.fertile2 = p.getLocation().clone();
+
+				p.sendMessage("Location 2. set to: " + plugin.fertile2.getBlockX() + ", " + plugin.fertile2.getBlockY()
+						+ ", " + plugin.fertile2.getBlockZ());
+
+				ItemStack item = event.getItem();
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(plugin.fertilitytoolnameunused);
+				item.setItemMeta(meta);
+			}
 		}
 	}
 }

@@ -76,7 +76,7 @@ public class Nightspawner extends Spawner {
 		if (found) {
 			spawnableground.get((int) Math.round(Math.random() * (spawnableground.size() - 1)));
 
-			Block spawnblock = spawnableground.get((int) Math.round(Math.random() * spawnableground.size()));
+			Block spawnblock = spawnableground.get((int) Math.round(Math.random() * (spawnableground.size()-1)));
 			spawnchunk.getWorld().spawnEntity(spawnblock.getLocation().add(0, 2, 0), entity);
 		}
 	}
